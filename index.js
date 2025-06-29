@@ -1,10 +1,8 @@
-let lat = 0
-let long =0
+let lat = 0;
+let long = 0;
 
-let searchInput=document.getElementById('searchLocationInput');
-let searchBtn=document.getElementById('searchBtn');
-
-
+let searchInput = document.getElementById("searchLocationInput");
+let searchBtn = document.getElementById("searchBtn");
 
 function getCurrentUserCoordinates() {
   navigator.geolocation.getCurrentPosition(
@@ -15,33 +13,35 @@ function getCurrentUserCoordinates() {
       getCurrentWeather(`${lat},${long}`);
       getThreeDaysForecast(`${lat},${long}`);
     },
-    function () {//San Francisco's latitude and longtitude by default
+    function () {
+      //San Francisco's latitude and longtitude by default
       lat = Number(37.77493);
       long = Number(-122.41942);
       getCurrentWeather(`${lat},${long}`);
       getThreeDaysForecast(`${lat},${long}`);
-      
     }
   );
 }
-async function getCurrentWeather(q){
- 
-   try{
-    const response=await fetch(`https://api.weatherapi.com/v1/forecast.json?key=7eaed01f06254803bc8224352252006&q=${q}&days=4`);
-    const data=await response.json();
-    let date=new Date(`${data.current.last_updated}`);
-  
-    
-    
-   
+async function getCurrentWeather(q) {
+  try {
+    const response = await fetch(
+      `https://api.weatherapi.com/v1/forecast.json?key=7eaed01f06254803bc8224352252006&q=${q}&days=4`
+    );
+    const data = await response.json();
+    let date = new Date(`${data.current.last_updated}`);
 
-   
-    document.getElementById('countryName').innerHTML=` <h1 class="country-name display-3 fw-medium" >
-             ${data.location.region}
+    document.getElementById(
+      "countryName"
+    ).innerHTML = ` <h1 class="country-name display-3 fw-medium" >
+             ${data.location.name}
             </h1>
-            <p class="date" id="date">${date.toLocaleDateString('en-US',{weekday:'long'})}, ${date.toLocaleDateString('en-us',{month:'long'})} ${date.getDate()}</p>`;
-   
-    document.getElementById('currentWeatherCard').innerHTML=`
+            <p class="date" id="date">${date.toLocaleDateString("en-US", {
+              weekday: "long",
+            })}, ${date.toLocaleDateString("en-us", {
+      month: "long",
+    })} ${date.getDate()}</p>`;
+
+    document.getElementById("currentWeatherCard").innerHTML = `
     <div
                 class="weather-card bg-card p-5 rounded-5 col-12 col-md-6 shadow"
               >
@@ -76,35 +76,35 @@ async function getCurrentWeather(q){
                 </ul>
               </div>
     `;
-    
- 
-    }catch{
-  document.getElementById('alertLocation').classList.replace("d-none","d-flex");
-   }
-
-    
-    
+  } catch {
+    document
+      .getElementById("alertLocation")
+      .classList.replace("d-none", "d-flex");
+  }
 }
 
-async function getThreeDaysForecast(q){
-   try{
-     const response=await fetch(`https://api.weatherapi.com/v1/forecast.json?key=7eaed01f06254803bc8224352252006&q=${q}&days=4`);
-    const data=await response.json();
-    
-    
-     
-    let cartona=``;
-    for(let i=1;i<data.forecast.forecastday.length;i++){
-       let date=new Date(`${data.forecast.forecastday[i].date}`);
-     
-       
-        cartona=cartona+`
+async function getThreeDaysForecast(q) {
+  try {
+    const response = await fetch(
+      `https://api.weatherapi.com/v1/forecast.json?key=7eaed01f06254803bc8224352252006&q=${q}&days=4`
+    );
+    const data = await response.json();
+
+    let cartona = ``;
+    for (let i = 1; i < data.forecast.forecastday.length; i++) {
+      let date = new Date(`${data.forecast.forecastday[i].date}`);
+
+      cartona =
+        cartona +
+        `
          <div class="inner col-md-4 p-5">
  
           <div class="weather-card bg-nextdays p-5 rounded-5 shadow card-hover">
                 <span id="weatherDay"
                   class="bg-day text-center text-white rounded-pill p-2 mb-2"
-                  >${date.toLocaleDateString('en-US',{weekday:'long'})}</span
+                  >${date.toLocaleDateString("en-US", {
+                    weekday: "long",
+                  })}</span
                 >
                 <div>
                   <img
@@ -116,7 +116,9 @@ async function getThreeDaysForecast(q){
                 <h2
                   class="tempreture fs-2 text-black text-center position-relative"
                 >
-                ${data.forecast.forecastday[i].day.avgtemp_c} <span class="fs-6 position-absolute top-0">o</span>
+                ${
+                  data.forecast.forecastday[i].day.avgtemp_c
+                } <span class="fs-6 position-absolute top-0">o</span>
                   <span class="fs-2 d-inline-block ms-2">C</span>
                 </h2>
                 <ul class="list-unstyled mt-2 text-black">
@@ -134,35 +136,30 @@ async function getThreeDaysForecast(q){
               </div>
         </div>
         `;
-      
-        
     }
-    document.getElementById('row').innerHTML=cartona;}
-   catch{
-  document.getElementById('row').innerHTML=`
+    document.getElementById("row").innerHTML = cartona;
+  } catch {
+    document.getElementById("row").innerHTML = `
            <div id="alertLocation" class="alert alert-danger " role="alert">
  location not identfied , try again later!
 </div>
   `;
-   }
-     
+  }
 }
 
-searchBtn.addEventListener('click',function(e){
+searchBtn.addEventListener("click", function (e) {
   e.preventDefault();
-   document.getElementById("alertLocation").classList.replace('d-flex','d-none');
-   if(searchInput.value.trim()==``){
- getCurrentWeather(`${lat},${long}`);
-      getThreeDaysForecast(`${lat},${long}`);
-   }else{
-getCurrentWeather(searchInput.value);
-getThreeDaysForecast(searchInput.value);
-   }
+  document
+    .getElementById("alertLocation")
+    .classList.replace("d-flex", "d-none");
+  if (searchInput.value.trim() == ``) {
+    getCurrentWeather(`${lat},${long}`);
+    getThreeDaysForecast(`${lat},${long}`);
+  } else {
+    getCurrentWeather(searchInput.value);
+    getThreeDaysForecast(searchInput.value);
+  }
 });
 
 //Get User Location and forecast
- getCurrentUserCoordinates();
-
-
-  
-
+getCurrentUserCoordinates();
