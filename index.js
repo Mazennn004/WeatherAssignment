@@ -1,8 +1,8 @@
 let lat = 0
 let long =0
-let today=new Date();
+
 let searchInput=document.getElementById('searchLocationInput');
-console.log(searchInput.value);
+let searchBtn=document.getElementById('searchBtn');
 
 
 
@@ -25,19 +25,21 @@ function getCurrentUserCoordinates() {
   );
 }
 async function getCurrentWeather(q){
+ 
    try{
     const response=await fetch(`https://api.weatherapi.com/v1/forecast.json?key=7eaed01f06254803bc8224352252006&q=${q}&days=4`);
     const data=await response.json();
-    if(response.status>300||response.status==400){
- getCurrentWeather(`${lat},${long}`); //show current user location's forcast if the response is bad request(400)
+    let date=new Date(`${data.current.last_updated}`);
+  
+    
+    
    
-    }else{
 
    
     document.getElementById('countryName').innerHTML=` <h1 class="country-name display-3 fw-medium" >
              ${data.location.region}
             </h1>
-            <p class="date" id="date">${today.toLocaleDateString('en-US', { weekday: 'long' })}, ${today.toLocaleDateString('en-us',{month:'long'})} ${today.getDate()}</p>`;
+            <p class="date" id="date">${date.toLocaleDateString('en-US',{weekday:'long'})}, ${date.toLocaleDateString('en-us',{month:'long'})} ${date.getDate()}</p>`;
    
     document.getElementById('currentWeatherCard').innerHTML=`
     <div
@@ -74,10 +76,10 @@ async function getCurrentWeather(q){
                 </ul>
               </div>
     `;
-    }
+    
  
     }catch{
-    alert('network error');
+  document.getElementById('alertLocation').classList.replace("d-none","d-flex");
    }
 
     
@@ -88,15 +90,13 @@ async function getThreeDaysForecast(q){
    try{
      const response=await fetch(`https://api.weatherapi.com/v1/forecast.json?key=7eaed01f06254803bc8224352252006&q=${q}&days=4`);
     const data=await response.json();
-    if (response.status>300||response.status==400){
- getThreeDaysForecast(`${lat},${long}`);  //show current user location's forcast if the response is bad request(400)
-    }else{
-    let d=today;
+    
     
      
     let cartona=``;
     for(let i=1;i<data.forecast.forecastday.length;i++){
-        d.setDate(d.getDate()+1);
+       let date=new Date(`${data.forecast.forecastday[i].date}`);
+     
        
         cartona=cartona+`
          <div class="inner col-md-4 p-5">
@@ -104,7 +104,7 @@ async function getThreeDaysForecast(q){
           <div class="weather-card bg-nextdays p-5 rounded-5 shadow card-hover">
                 <span id="weatherDay"
                   class="bg-day text-center text-white rounded-pill p-2 mb-2"
-                  >${d.toLocaleDateString('en-US',{weekday:'long'})}</span
+                  >${date.toLocaleDateString('en-US',{weekday:'long'})}</span
                 >
                 <div>
                   <img
@@ -138,14 +138,19 @@ async function getThreeDaysForecast(q){
         
     }
     document.getElementById('row').innerHTML=cartona;}
-   }catch{
-    alert('error');
+   catch{
+  document.getElementById('row').innerHTML=`
+           <div id="alertLocation" class="alert alert-danger " role="alert">
+ location not identfied , try again later!
+</div>
+  `;
    }
      
 }
 
-searchInput.addEventListener('input',function(){
-  
+searchBtn.addEventListener('click',function(e){
+  e.preventDefault();
+   document.getElementById("alertLocation").classList.replace('d-flex','d-none');
 getCurrentWeather(searchInput.value);
 getThreeDaysForecast(searchInput.value);
 });
