@@ -26,7 +26,7 @@ function getCurrentUserCoordinates() {
 }
 async function getCurrentWeather(q){
    try{
-    const response=await fetch(`http://api.weatherapi.com/v1/forecast.json?key=7eaed01f06254803bc8224352252006&q=${q}&days=4`);
+    const response=await fetch(`https://api.weatherapi.com/v1/forecast.json?key=7eaed01f06254803bc8224352252006&q=${q}&days=4`);
     const data=await response.json();
     if(response.status>300||response.status==400){
  getCurrentWeather(`${lat},${long}`); //show current user location's forcast if the response is bad request(400)
@@ -86,7 +86,7 @@ async function getCurrentWeather(q){
 
 async function getThreeDaysForecast(q){
    try{
-     const response=await fetch(`http://api.weatherapi.com/v1/forecast.json?key=7eaed01f06254803bc8224352252006&q=${q}&days=4`);
+     const response=await fetch(`https://api.weatherapi.com/v1/forecast.json?key=7eaed01f06254803bc8224352252006&q=${q}&days=4`);
     const data=await response.json();
     if (response.status>300||response.status==400){
  getThreeDaysForecast(`${lat},${long}`);  //show current user location's forcast if the response is bad request(400)
