@@ -151,8 +151,13 @@ async function getThreeDaysForecast(q){
 searchBtn.addEventListener('click',function(e){
   e.preventDefault();
    document.getElementById("alertLocation").classList.replace('d-flex','d-none');
+   if(searchInput.value.trim()==``){
+ getCurrentWeather(`${lat},${long}`);
+      getThreeDaysForecast(`${lat},${long}`);
+   }else{
 getCurrentWeather(searchInput.value);
 getThreeDaysForecast(searchInput.value);
+   }
 });
 
 //Get User Location and forecast
